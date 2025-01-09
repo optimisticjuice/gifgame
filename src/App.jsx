@@ -54,7 +54,11 @@ function App() {
 
     }
   }
-
+  const deleteGif = (gifid) => {
+    const newGifs = gifs.filter((gif) => gif.id !== gifid);
+    setgifs(newGifs); 
+    
+  }
   useEffect(() => {
   searchgifs();    
   }, []);
@@ -125,6 +129,8 @@ function App() {
               }}
             />
             <button onClick={() => downloadGif(gif.images.fixed_height.url, gif.id)} style={{margin: "5px", padding: "3px", color: 'brown', backgroundColor: "#f9f9f9"}}>&nbsp;Download Gif&nbsp;</button>              
+            <button onClick={() => deleteGif(gif.id)} style={{margin: "5px", padding: "3px", color: 'red', backgroundColor: "#f9f9f9"}}>&nbsp;Delete Gif&nbsp;</button>          
+
           </div> 
         ))}
       </div>
