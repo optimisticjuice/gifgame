@@ -2,12 +2,12 @@ import  { useEffect, useState } from 'react';
 import axios from 'axios';
 
 function App() {
+
   
   const [gifs, setgifs] = useState([]);  // To store gif data
   const [search, setSearch] = useState(''); // for search strings
   const [loading, setloading] = useState(false); // for loading state
   const [limit, setlimit] = useState(27); // for limit of gifs
-  
   
   const API_KEY = import.meta.env.VITE_API_KEY;
   const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -54,7 +54,7 @@ function App() {
 
     } catch (error) {
       console.error("Error downloading gif", error);
-
+      
     }
   }
 
@@ -67,10 +67,49 @@ function App() {
   useEffect(() => {
   searchgifs();    
   }, []);
+  // Toggle for Dark Mode and Light Mode
+
+  // Step 1: Create a state variable and a setter function to toggle the theme
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // Step 2: Use effect to load the saved theme from localStorage
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      setIsDarkMode(savedTheme === 'dark');
+    }
+  }, []);
+
+  // Step 3: Toggle the theme and save the choice to localStorage
+  const toggleTheme = () => {
+    setIsDarkMode(prevMode => {
+      const newMode = !prevMode;
+      localStorage.setItem('theme', newMode ? 'dark' : 'light');
+      
+      
+      return newMode;
+    });
+  };
+
+  // Step 4: Apply the theme to the document body
+  useEffect(() => {
+    if (isDarkMode) {
+      document.body.style.backgroundColor = 'black';
+      document.body.style.color = 'white';
+    } else {
+      document.body.style.backgroundColor = 'white';
+      document.body.style.color = 'black';
+    }
+  }, [isDarkMode]);
 
   return (
-  <div style={{textAlign: "center", padding: "20px"}}>
-
+    <div>
+      <span>{isDarkMode ? '🌙' : '☀️'}</span>
+      &nbsp;
+      <input type='range' onChange={toggleTheme}  min={0}  max={1} style={{width : "40px"}}/>
+      
+<div style={{textAlign: "center", padding: "20px"}}>
+    
     <h1>Search Giphy : </h1> 
     <input 
       type='text' 
@@ -93,7 +132,7 @@ function App() {
     
     <button 
       onClick={() => searchgifs()}
-    
+      
       style={{
         padding: "10px",
         margin: "10px",
@@ -103,7 +142,7 @@ function App() {
         border: "none",
         cursor: "pointer"
       }}
-    >
+      >
       Search
     </button>
     <br/>
@@ -115,7 +154,7 @@ function App() {
       <p><img src='../public/bally.svg' alt='ballbounce'/></p>
     ) : (
       <div 
-        style={{
+      style={{
           display: 'grid', 
           gap: "3px", 
           marginTop: "10px", 
@@ -134,14 +173,15 @@ function App() {
                 borderRadius: "10px"
               }}
             />
-            <button onClick={() => downloadGif(gif.images.fixed_height.url, gif.id)} style={{marginTop: "3px", padding: "3px", color: 'brown', backgroundColor: "#f9f9f9", borderRadius: "3px"}}>&nbsp;Download Gif&nbsp;</button>    
-            <button onClick={() => deleteGif(gif.id)} style={{margin: "2px", padding: "3px", color: 'red', backgroundColor: "#f9f9f9", borderRadius: "3px"}}>&nbsp;Delete Gif&nbsp;</button>          
+            <button onClick={() => downloadGif(gif.images.fixed_height.url, gif.id)} style={{marginTop: "5px", padding: "3px", color: 'brown', backgroundColor: "#f9f9f9", borderRadius: "3px", cursor: "cell"}}>&nbsp;Download Gif&nbsp;</button>    
+            <button onClick={() => deleteGif(gif.id)} style={{margin: "2px", padding: "3px", color: 'red', backgroundColor: "#f9f9f9", borderRadius: "3px", cursor: 'pointer'}}>&nbsp;Delete Gif&nbsp;</button>          
           </div> 
-        ))}
+        ))} 
       </div>
     )}
   </div>
+    </div>
   )  
 }
-
-export default App
+// Add comments to the code to make it more readable and understandable 
+export default App;
