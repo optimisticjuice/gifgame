@@ -17,6 +17,7 @@ function App() {
   const limitmin = 1;
   const limitmax = 50;
   const searchgifs = async () => {
+    // loading true
     setloading(true);
     try {
       const response = await axios.get(`${BASE_URL}`, {
@@ -26,40 +27,45 @@ function App() {
           limit: limit,
         }
       });
+      // setGifs for the array of gifs from the response.data.data api using giphy api
       setgifs(response.data.data);
+      console.log(gifs);
+      console.log(gif.images);
     } catch (error) {
       console.log("Error fetching data" + error);
 
     }finally{
-      setloading(false);
+      // loading false 
+      setloading(false)
     }
   } 
+  // Download Gif 
+
   const downloadGif = async (gifUrl, gifid) => {
-    try {
+    try {   
       const res = await fetch(gifUrl);
-      const blob = await res.blob();
+      const blob = await res.blob(); //binary large object
+
       // create a temporary link element for the gif
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
+      const url = window.URL.createObjectURL(blob); //create a temporary URl for the downloaded GIF blob, It allowes the browser to treat the blob as a real file that can be downloaded
+      const a = document.createElement("a");// create  a hidden <a> tag in the DOM (a link element)
       a.href = url;
       a.download = `Gif : ${gifid}.gif`;
-      document.body.appendChild(a);
+      document.body.appendChild(a);//not visible
       a.click();
       a.remove();
       window.URL.revokeObjectURL(url);
-
     } catch (error) {
       console.error("Error downloading gif", error);
-      
     }
-  }
+  };
 
+  //  Delete Gif 
   const deleteGif = (gifid) => {
     const newGifs = gifs.filter((gif) => gif.id !== gifid);
     setgifs(newGifs);
-  
-  
-  }
+  };
+
   //useEffect logic for search
  
   useEffect(() => {
@@ -71,50 +77,20 @@ function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   // Step 2: Use effect to load the saved theme from localStorage
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      setIsDarkMode(savedTheme === 'dark');
-    }
-  }, []);
+
+  // Local Storage and save theme?
 
   // Step 3: Toggle the theme and save the choice to localStorage
-  const toggleTheme = () => {
-    setIsDarkMode(prevMode => {
-      const newMode = !prevMode;
-      localStorage.setItem('theme', newMode ? 'dark' : 'light');
-      
-      
-      return newMode;
-    });
-  };
+  // Toggle Theme from light to dark 
 
-  // Step 4: Apply the theme to the document body
-  useEffect(() => {
-    if (isDarkMode) {
-      document.body.style.backgroundColor = 'black';
-      document.body.style.color = 'white';
-    } else {
-      document.body.style.backgroundColor = 'white';
-      document.body.style.color = 'black';
-    }
-  }, [isDarkMode]);
-
+  // useEffect 
   return (
-    <div>
-      <span>{isDarkMode ? '🌙' : '☀️'}</span>
-      &nbsp;
-      <input type='range' onChange={toggleTheme}  min={0}  max={1} style={{width : "40px"}}/>
-      
-<div style={{textAlign: "center", padding: "20px"}}>
     
-    <h1>Search Giphy : </h1> 
-    <input 
-      type='text' 
-      placeholder='search gifs' 
-      value={search} 
-      onChange={(e) => setSearch(e.target.value)} 
-      onKeyDown={(e) => {
+      <div style={{textAlign: "center", padding: "20px"}}>
+
+<h1>Search Giphy : </h1> 
+
+<input type="text" value={search} onChange={e => setSearch(e.target.value)} onKeyDown={(e) => {
         if (e.key === 'Enter') {
           searchgifs();
         }
@@ -125,12 +101,17 @@ function App() {
         marginBottom: "10px", 
         borderRadius: "5px", 
         border: "1px solid #ccc"
-      }} 
-    />
-    
-    <button 
+      }} />
+<br/>
+    <input type='range' value={limit} min={limitmin} max={limitmax} style={{width: "800px"}} onChange={(e) => setlimit(e.target.value)}/>
+<br/>
+          <br/>
+          <p>Range: <input type='num' style={{width: "30px"}} value={limit} onChange={(e) => setlimit(e.target.value)}/></p>
+          <br/>
+
+          <button 
       onClick={() => searchgifs()}
-      
+    
       style={{
         padding: "10px",
         margin: "10px",
@@ -140,44 +121,50 @@ function App() {
         border: "none",
         cursor: "pointer"
       }}
-      >
+    >
       Search
     </button>
-    <br/>
-    <input type='range' value={limit} min={limitmin} max={limitmax} style={{width: "800px"}} onChange={(e) => setlimit(e.target.value)}/>
-    <br/>
-    <p>Range: <input type='num' style={{width: "30px"}} value={limit} onChange={(e) => setlimit(e.target.value)}/></p>
-    <br/>
+
+
     {loading ? (
-      <p><img src='../public/bally.svg' alt='ballbounce'/></p>
-    ) : (
+      <p>
+        <img src="public/bally.svg" alt="Loading Spinner" />
+      </p>
+    )
+    
+    :
+     (
       <div 
-      style={{
+        style={{
           display: 'grid', 
           gap: "3px", 
           marginTop: "10px", 
           gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))"
         }}
       >
-        {gifs.map((gif) => (
-          <div key={gif.id}>
-            <img 
-              src={gif.images.fixed_height.url} 
-              alt={gif.title} 
-              style={{
+      {gifs.map((gif) => (
+      <div key={gif.id}>
+      <img src={gif.images.fixed_height.url} alt={gif.title}       
+      style={{
                 width: "120px", 
                 height: "120px", 
                 objectFit: "cover", 
                 borderRadius: "10px"
               }}
-            />
-            <button onClick={() => downloadGif(gif.images.fixed_height.url, gif.id)} style={{marginTop: "3px", padding: "3px", color: 'brown', backgroundColor: "#f9f9f9", borderRadius: "3px", cursor: "copy"}}>&nbsp;Download Gif&nbsp;</button>    
-            <button onClick={() => deleteGif(gif.id)} style={{margin: "2px", padding: "3px", color: 'red', backgroundColor: "#f9f9f9", borderRadius: "3px"}}>&nbsp;Delete Gif&nbsp;</button>          
-          </div> 
-        ))} 
+         />
+      
+      <button onClick={() => downloadGif(gif.images.fixed_height.url,gif.id)}style={{marginTop: "3px", padding: "3px", color: 'brown', backgroundColor: "#f9f9f9", borderRadius: "3px", cursor: "copy"}}>Download Gif</button>
+      <button onClick={() => deleteGif(gif.id)} style={{margin: "2px", padding: "3px", color: 'red', backgroundColor: "#f9f9f9", borderRadius: "3px"}}>&nbsp;Delete Gif&nbsp;</button>
       </div>
-    )}
-  </div>
+      
+    )
+    )
+  }
+    
+      </div>
+    )
+    }
+
     </div>
   )  
 }
