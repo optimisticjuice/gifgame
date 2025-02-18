@@ -4,6 +4,7 @@ import axios from 'axios';
 function App() {
 
   
+  
   const [gifs, setgifs] = useState([]);  // To store gif data
   const [search, setSearch] = useState(''); // for search strings
   const [loading, setloading] = useState(false); // for loading state
@@ -13,17 +14,11 @@ function App() {
   const BASE_URL = import.meta.env.VITE_BASE_URL;
 
   // function to search gifs
-  
   const limitmin = 1;
-  const limitmax = 100;
+  const limitmax = 50;
   const searchgifs = async () => {
     setloading(true);
     try {
-       
-
-      const response = await axios.get(`${BASE_URL}`, {
-       
-
       const response = await axios.get(`${BASE_URL}`, {
         params: {
           api_key: API_KEY,
@@ -32,9 +27,6 @@ function App() {
         }
       });
       setgifs(response.data.data);
-      
-      
-      console.log(response.data.data);
     } catch (error) {
       console.log("Error fetching data" + error);
 
@@ -68,15 +60,11 @@ function App() {
   
   
   }
-  const deleteGif = (gifid) => {
-    const newGifs = gifs.filter((gif) => gif.id !== gifid);
-    setgifs(newGifs);
-  
-  
-  }
+  //useEffect logic for search
+ 
   useEffect(() => {
   searchgifs();    
-  }, []);
+}, []);
   // Toggle for Dark Mode and Light Mode
 
   // Step 1: Create a state variable and a setter function to toggle the theme
@@ -142,8 +130,6 @@ function App() {
     
     <button 
       onClick={() => searchgifs()}
-    
-      onClick={() => searchgifs()}
       
       style={{
         padding: "10px",
@@ -187,8 +173,6 @@ function App() {
             />
             <button onClick={() => downloadGif(gif.images.fixed_height.url, gif.id)} style={{marginTop: "3px", padding: "3px", color: 'brown', backgroundColor: "#f9f9f9", borderRadius: "3px", cursor: "copy"}}>&nbsp;Download Gif&nbsp;</button>    
             <button onClick={() => deleteGif(gif.id)} style={{margin: "2px", padding: "3px", color: 'red', backgroundColor: "#f9f9f9", borderRadius: "3px"}}>&nbsp;Delete Gif&nbsp;</button>          
-            <button onClick={() => downloadGif(gif.images.fixed_height.url, gif.id)} style={{marginTop: "5px", padding: "3px", color: 'brown', backgroundColor: "#f9f9f9", borderRadius: "3px", cursor: "cell"}}>&nbsp;Download Gif&nbsp;</button>    
-            <button onClick={() => deleteGif(gif.id)} style={{margin: "2px", padding: "3px", color: 'red', backgroundColor: "#f9f9f9", borderRadius: "3px", cursor: 'pointer'}}>&nbsp;Delete Gif&nbsp;</button>          
           </div> 
         ))} 
       </div>
@@ -198,4 +182,5 @@ function App() {
   )  
 }
 // Add comments to the code to make it more readable and understandable 
+
 export default App;
