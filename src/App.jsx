@@ -55,6 +55,14 @@ function App() {
       }
     } else {
       setScore(prev => prev - 1);
+      const wrongGif = gifs.find(gif => gif.id === gifId);
+      if (wrongGif) {
+        wrongGif.color = 'red';
+        setTimeout(() => {
+          wrongGif.color = 'grey';
+          setGifs([...gifs]);
+        }, 1000)
+      }
     }
   }
 
