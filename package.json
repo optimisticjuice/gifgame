@@ -10,10 +10,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@radix-ui/react-select": "^2.2.5",
     "axios": "^1.7.9",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "form-data": "^4.0.1",
+    "lucide-react": "^0.525.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-use-downloader": "^1.3.0",
+    "tailwind-merge": "^3.3.1",
     "twelvelabs-js": "^0.4.1"
   },
   "devDependencies": {
@@ -26,6 +32,7 @@
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.14",
     "globals": "^15.12.0",
+    "tw-animate-css": "^1.3.5",
     "vite": "^6.0.1"
   }
 }
